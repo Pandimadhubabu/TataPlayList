@@ -37,25 +37,28 @@ export default function Home() {
       var raw = JSON.stringify(window.location.origin.replace('localhost', '127.0.0.1') + '/api/getM3u?sid=' + theUser.sid + '_' + theUser.acStatus[0] + '&id=' + theUser.id + '&sname=' + theUser.sName + '&tkn=' + token + '&ent=' + theUser.entitlements.map(x => x.pkgId).join('_'));
       var url = raw.replace(/\"/g, "")
 
-      // POST to /api/{API Version}/shorten
-      fetch('/api/shorten', {
-        method: 'POST',
-        body: JSON.stringify({
-          urls: url
-        })
-      })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data)
-          console.log(data[0].key)
-          setDynamicUrl(data[0].key)
-          setLoading(false)
-        })
-        .catch(err => {
-          console.error(err)
-          alert('Something went wrong, please try again later.')
-          setLoading(false)
-        })
+        const shorturl = async () => {
+          // POST to /api/{API Version}/shorten
+          await fetch('/api/shorten', {
+            method: 'POST',
+            body: JSON.stringify({
+              urls: url
+            })
+          })
+            .then(res => res.json())
+            .then(data => {
+              console.log(data)
+              console.log(data[0].key)
+              setDynamicUrl(data[0].key)
+              setLoading(false)
+            })
+            .catch(err => {
+              console.error(err)
+              alert('Something went wrong, please try again later.')
+              setLoading(false)
+            })
+        }
+      shorturl();
     }
     else
       setDynamicUrl("");
