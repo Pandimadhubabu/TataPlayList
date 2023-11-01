@@ -18,6 +18,7 @@ export default function Home() {
   const [dynamicUrl, setDynamicUrl] = useState("");
   const [loginType, setLoginType] = useState("OTP");
   const [pwd, setPwd] = useState("");
+  const [results, setResults] = useState([])
 
 
   useEffect(() => {
@@ -37,27 +38,25 @@ export default function Home() {
       var raw = JSON.stringify(window.location.origin.replace('localhost', '127.0.0.1') + '/api/getM3u?sid=' + theUser.sid + '_' + theUser.acStatus[0] + '&id=' + theUser.id + '&sname=' + theUser.sName + '&tkn=' + token + '&ent=' + theUser.entitlements.map(x => x.pkgId).join('_'));
       var url = raw.replace(/\"/g, "")
 
-        const shorturl = async () => {
-          // POST to /api/{API Version}/shorten
-          await fetch('/api/shorten', {
-            method: 'POST',
-            body: JSON.stringify({
-              urls: url
-            })
+      const shorturl = async () => {
+        // POST to /api/{API Version}/shorten
+        await fetch('/api/shorten', {
+          method: 'POST',
+          body: JSON.stringify({
+            urls: url
           })
-            .then(res => res.json())
-            .then(data => {
-              console.log(data)
-              console.log(data[0].key)
-              setDynamicUrl(data[0].key)
-              setLoading(false)
-            })
-            .catch(err => {
-              console.error(err)
-              alert('Something went wrong, please try again later.')
-              setLoading(false)
-            })
-        }
+        })
+          .then(res => res.json())
+          .then(data => {
+            setDynamicUrl(data[0].key)
+            setLoading(false)
+          })
+          .catch(err => {
+            console.error(err)
+            alert('Something went wrong, please try again later.')
+            setLoading(false)
+          })
+      }
       shorturl();
     }
     else
@@ -102,9 +101,10 @@ export default function Home() {
           localStorage.setItem("token", token);
           setError("");
         }
-        else
+        else {
           setError(res.message);
-        setLoading(false);
+          setLoading(false);
+        }
       })
       .catch(error => {
         console.log('error', error);
@@ -216,7 +216,7 @@ export default function Home() {
                           <Message.Header>Dynamic URL to get m3u: </Message.Header>
                           {/* <Image centered src={'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(m3uMeta.url)} size='small' /> */}
                           <p>
-                            <a href={`/${dynamicUrl}`}>{dynamicUrl}</a>
+                            <a href={`/${dynamicUrl}`}>{`${dynamicUrl}`}</a>
                           </p>
                           <p>
                             You can use the above m3u URL in OTT Navigator or Tivimate app to watch all your subscribed channels.
