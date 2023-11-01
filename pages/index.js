@@ -216,7 +216,7 @@ export default function Home() {
                           <Message.Header>Dynamic URL to get m3u: </Message.Header>
                           {/* <Image centered src={'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(m3uMeta.url)} size='small' /> */}
                           <p>
-                            <a href={dynamicUrl}>{dynamicUrl}</a>
+                            <a href={`/${dynamicUrl}`}>{dynamicUrl}</a>
                           </p>
                           <p>
                             You can use the above m3u URL in OTT Navigator or Tivimate app to watch all your subscribed channels.
