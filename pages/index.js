@@ -20,7 +20,6 @@ export default function Home() {
   const [pwd, setPwd] = useState("");
   const [results, setResults] = useState([])
 
-
   useEffect(() => {
     let tok = localStorage.getItem("token");
     let userd = localStorage.getItem("userDetails");
@@ -35,15 +34,15 @@ export default function Home() {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer 53d037668d748648c12097863c2321ea61be9de0");
       myHeaders.append("Content-Type", "application/json");
-      var raw = JSON.stringify(window.location.origin.replace('localhost', '127.0.0.1') + '/api/getM3u?sid=' + theUser.sid + '_' + theUser.acStatus[0] + '&id=' + theUser.id + '&sname=' + theUser.sName + '&tkn=' + token + '&ent=' + theUser.entitlements.map(x => x.pkgId).join('_'));
+      var raw = JSON.stringify(window.location.origin + '/api/getM3u?sid=' + theUser.sid + '_' + theUser.acStatus[0] + '&id=' + theUser.id + '&sname=' + theUser.sName + '&tkn=' + token + '&ent=' + theUser.entitlements.map(x => x.pkgId).join('_'));
       var url = raw.replace(/\"/g, "")
-
       const shorturl = async () => {
         // POST to /api/{API Version}/shorten
         await fetch('/api/shorten', {
           method: 'POST',
           body: JSON.stringify({
-            urls: url
+            urls: url,
+            password: ''
           })
         })
           .then(res => res.json())
