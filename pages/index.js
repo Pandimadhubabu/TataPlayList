@@ -34,26 +34,28 @@ export default function Home() {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer 53d037668d748648c12097863c2321ea61be9de0");
       myHeaders.append("Content-Type", "application/json");
-      console.log('mko');
-      console.log(process.env.REACT_APP_M3U_FUNCTION_BASE_URL);
-      var raw = JSON.stringify({
-        "long_url": window.location.origin.replace('localhost', '127.0.0.1') + '/api/getM3u?sid=' + theUser.sid + '_' + theUser.acStatus[0] + '&id=' + theUser.id + '&sname=' + theUser.sName + '&tkn=' + token + '&ent=' + theUser.entitlements.map(x => x.pkgId).join('_')
-      });
+      var raw = JSON.stringify(window.location.origin.replace('localhost', '127.0.0.1') + '/api/getM3u?sid=' + theUser.sid + '_' + theUser.acStatus[0] + '&id=' + theUser.id + '&sname=' + theUser.sName + '&tkn=' + token + '&ent=' + theUser.entitlements.map(x => x.pkgId).join('_'));
+      var url = raw.replace(/\"/g, "")
 
-      var requestOptions = {
+      // POST to /api/{API Version}/shorten
+      fetch('/api/shorten', {
         method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
-
-      fetch("https://api-ssl.bitly.com/v4/shorten", requestOptions)
-        .then(response => response.text())
-        .then(result => {
-          console.log(result);
-          setDynamicUrl(JSON.parse(result).link);
+        body: JSON.stringify({
+          urls: url
         })
-        .catch(error => console.log('error', error));
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+          console.log(data[0].key)
+          setDynamicUrl(data[0].key)
+          setLoading(false)
+        })
+        .catch(err => {
+          console.error(err)
+          alert('Something went wrong, please try again later.')
+          setLoading(false)
+        })
     }
     else
       setDynamicUrl("");
